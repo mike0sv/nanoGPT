@@ -1,0 +1,4 @@
+outs:
+- md5: 647ece5d7b404fa13bba8db0bf2f2b4f
+  size: 1501295402
+  path: ckpt.pt

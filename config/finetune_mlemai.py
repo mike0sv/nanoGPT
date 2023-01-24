@@ -21,4 +21,3 @@ learning_rate = 1e-5
 max_iters = 1000
 decay_lr = False
 
-device = "mps"
