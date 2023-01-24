@@ -4,18 +4,19 @@ import pickle
 import shutil
 
 import git
-import requests
-import tiktoken
 import numpy as np
+import tiktoken
 
 FILE_NAME = 'input.txt'
 input_file_path = os.path.join(os.path.dirname(__file__), FILE_NAME)
 repo_path = os.path.join(os.path.dirname(__file__), "mlem.ai")
+
+
 def download():
     if os.path.exists(input_file_path):
         return
     if not os.path.exists(repo_path):
-        git.Repo.clone_from("https://github.com/iterative/mlem.ai/", "mlem.ai")
+        git.Repo.clone_from("https://github.com/iterative/mlem.ai/", repo_path)
     else:
         git.Repo(repo_path).remote("origin").pull()
 
@@ -23,7 +24,7 @@ def download():
         for filename in glob.glob(repo_path + "/content/docs/**/*.md"):
             print(os.path.relpath(filename, repo_path))
             f.write(os.path.relpath(filename, repo_path) + "\n")
-            with open(filename ,"r") as docfile:
+            with open(filename, "r") as docfile:
                 shutil.copyfileobj(docfile, f)
 
 
@@ -31,8 +32,8 @@ def tokenize():
     with open(input_file_path, 'r') as f:
         data = f.read()
     n = len(data)
-    train_data = data[:int(n*0.9)]
-    val_data = data[int(n*0.9):]
+    train_data = data[:int(n * 0.9)]
+    val_data = data[int(n * 0.9):]
 
     # encode with tiktoken gpt2 bpe
     enc = tiktoken.get_encoding("gpt2")
@@ -99,6 +100,7 @@ def tokenize_char():
     }
     with open(os.path.join(os.path.dirname(__file__), 'meta.pkl'), 'wb') as f:
         pickle.dump(meta, f)
+
 
 def main():
     download()
