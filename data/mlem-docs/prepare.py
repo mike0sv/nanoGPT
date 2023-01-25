@@ -2,6 +2,7 @@ import glob
 import os
 import pickle
 import shutil
+import sys
 
 import git
 import numpy as np
@@ -28,19 +29,50 @@ def download():
                 shutil.copyfileobj(docfile, f)
 
 
-def tokenize():
+def tokenize(with_vocab=True):
     with open(input_file_path, 'r') as f:
         data = f.read()
     n = len(data)
     train_data = data[:int(n * 0.9)]
     val_data = data[int(n * 0.9):]
 
-    # encode with tiktoken gpt2 bpe
-    enc = tiktoken.get_encoding("gpt2")
-    train_ids = enc.encode_ordinary(train_data)
-    val_ids = enc.encode_ordinary(val_data)
-    print(f"train has {len(train_ids):,} tokens")
-    print(f"val has {len(val_ids):,} tokens")
+    if not with_vocab:
+        # encode with tiktoken gpt2 bpe
+        enc = tiktoken.get_encoding("gpt2")
+        train_ids = enc.encode_ordinary(train_data)
+        val_ids = enc.encode_ordinary(val_data)
+        print(f"train has {len(train_ids):,} tokens")
+        print(f"val has {len(val_ids):,} tokens")
+    else:
+        tokens = sorted(list(set(data.split())))
+        vocab_size = len(tokens)
+        print(f"vocab size: {vocab_size:,}")
+
+        # create a mapping from characters to integers
+        stoi = {ch: i for i, ch in enumerate(tokens)}
+        itos = {i: ch for i, ch in enumerate(tokens)}
+
+        def encode(s):
+            return [stoi[c] for c in
+                    s]  # encoder: take a string, output a list of integers
+
+        def decode(l):
+            ''.join([itos[i] for i in
+                     l])  # decoder: take a list of integers, output a string
+
+        train_ids = encode(train_data)
+        val_ids = encode(val_data)
+        print(f"train has {len(train_ids):,} tokens")
+        print(f"val has {len(val_ids):,} tokens")
+
+        meta = {
+            'vocab_size': vocab_size,
+            'itos': itos,
+            'stoi': stoi,
+        }
+        with open(os.path.join(os.path.dirname(__file__), 'meta.pkl'),
+                  'wb') as f:
+            pickle.dump(meta, f)
 
     # export to bin files
     train_ids = np.array(train_ids, dtype=np.uint16)
@@ -104,8 +136,10 @@ def tokenize_char():
 
 def main():
     download()
-    tokenize()
-    # tokenize_char()
+    if len(sys.argv) > 1 and sys.argv[1] == "char":
+        tokenize_char()
+    else:
+        tokenize(len(sys.argv) > 1 and sys.argv[1] == "vocab")
 
 
 if __name__ == '__main__':
