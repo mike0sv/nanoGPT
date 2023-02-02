@@ -1,6 +1,6 @@
 from random import randint
 from urllib.parse import urlencode
-
+import secrets
 import streamlit
 import streamlit.components.v1
 from pydantic import BaseModel
@@ -8,6 +8,7 @@ from pydantic import BaseModel
 from mlem.runtime.client import HTTPClient
 from mlem.runtime.interface import ExecutionError
 
+MAX_CACHE = 10
 
 @streamlit.cache(hash_funcs={HTTPClient: lambda x: 0})
 def get_client():
@@ -21,12 +22,19 @@ streamlit.title("nanoGPT MLEM Docs Generator")
 streamlit.markdown("Read more in this [blogpost](todo-link)")
 
 
+uu = "session_id"
+if uu in streamlit.session_state:
+    user = streamlit.session_state[uu]
+else:
+    user = secrets.token_urlsafe(16)
+    streamlit.session_state[uu] = user
+
 @streamlit.experimental_singleton
-def _dialogue():
+def _dialogue(_):
     return []
 
 
-dialogue = _dialogue()
+dialogue = _dialogue(user)
 
 
 def promt():
@@ -44,7 +52,7 @@ def promt():
         with chat:
             for d in dialogue:
                 streamlit.markdown(d, unsafe_allow_html=True)
-            start = streamlit.text_input(label="Promt") or ""
+            start = streamlit.text_input(label="Promt") or " "
             arg_values = {"start": start,
                           "max_new_tokens": max_new_tokens,
                           "temperature": temperature, "top_k": 100,
@@ -70,6 +78,9 @@ def promt():
 
 
 promt()
+if len(dialogue) > MAX_CACHE:
+    dialogue = dialogue[-MAX_CACHE:]
+
 streamlit.markdown("---")
 streamlit.write(
     "Built for FastAPI server at `{{server_host}}:{{server_port}}`. Docs: https://mlem.ai/doc"
