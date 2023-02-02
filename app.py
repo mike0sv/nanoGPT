@@ -1,6 +1,6 @@
 from random import randint
 from urllib.parse import urlencode
-import secrets
+
 import streamlit
 import streamlit.components.v1
 from pydantic import BaseModel
@@ -9,6 +9,7 @@ from mlem.runtime.client import HTTPClient
 from mlem.runtime.interface import ExecutionError
 
 MAX_CACHE = 10
+
 
 @streamlit.cache(hash_funcs={HTTPClient: lambda x: 0})
 def get_client():
@@ -22,20 +23,20 @@ streamlit.title("nanoGPT MLEM Docs Generator")
 streamlit.markdown("Read more in this [blogpost](todo-link)")
 
 
-uu = "session_id"
-if uu in streamlit.session_state:
-    user = streamlit.session_state[uu]
-else:
-    user = secrets.token_urlsafe(16)
-    streamlit.session_state[uu] = user
+def get_session_id():
+    from streamlit.runtime.scriptrunner import get_script_run_ctx
+    ctx = get_script_run_ctx()
+    if ctx is None:
+        raise Exception("Failed to get the thread context")
+    return ctx.session_id
+
 
 @streamlit.experimental_singleton
-def _dialogue(_):
+def _dialogue(user_id):
     return []
 
 
-dialogue = _dialogue(user)
-
+dialogue = _dialogue(get_session_id())
 
 def promt():
     with streamlit.form(key="_"):
