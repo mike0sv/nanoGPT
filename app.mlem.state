@@ -1,0 +1,28 @@
+app_name: mlem-nano-gpt
+declaration:
+  app_name: mlem-nano-gpt
+  env:
+    object_type: env
+    type: flyio
+  object_type: deployment
+  scale_memory: 1024
+  server:
+    server_port: 8081
+    type: streamlit
+    ui_port: 8080
+    template: app.py
+  type: flyio
+fly_toml: "# fly.toml file generated for mlem-nano-gpt on 2023-01-26T04:37:53+03:00\n\
+  \napp = \"mlem-nano-gpt\"\nkill_signal = \"SIGINT\"\nkill_timeout = 5\nprocesses\
+  \ = []\n\n[env]\n\n[experimental]\n  auto_rollback = true\n\n[[services]]\n  http_checks\
+  \ = []\n  internal_port = 8080\n  processes = [\"app\"]\n  protocol = \"tcp\"\n\
+  \  script_checks = []\n  [services.concurrency]\n    hard_limit = 25\n    soft_limit\
+  \ = 20\n    type = \"connections\"\n\n  [[services.ports]]\n    force_https = true\n\
+  \    handlers = [\"http\"]\n    port = 80\n\n  [[services.ports]]\n    handlers\
+  \ = [\"tls\", \"http\"]\n    port = 443\n\n  [[services.tcp_checks]]\n    grace_period\
+  \ = \"1s\"\n    interval = \"15s\"\n    restart_limit = 0\n    timeout = \"2s\"\n"
+hostname: mlem-nano-gpt.fly.dev
+model_hash: 1ed3e0370cb14e76f59f92128fe1d06e
+model_link:
+  path: /Users/mike0sv/PycharmProjects/iterative/nanoGPT-mlem/mlem_model.mlem
+type: flyio

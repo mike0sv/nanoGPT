@@ -1,0 +1,9 @@
+app_name: mlem-nano-gpt
+object_type: deployment
+scale_memory: 1024
+server:
+  server_port: 8081
+  type: streamlit
+  ui_port: 8080
+  template: app.py
+type: flyio
