@@ -27,6 +27,6 @@ python3 wrapper.py out-mlemai-char mlem_char
 export FLYCTL_INSTALL="/home/ubuntu/.fly"
 export PATH="$FLYCTL_INSTALL/bin:$PATH"
 flyctl auth login
-mlem deploy run flyio app -m mlem_char --app_name mlem-nanogpt --server streamlit --scale_memory 1024 --server.ui_port 8080 --server.server_port 8081 --template app.py
+mlem deploy run flyio app -m mlem_char --app_name mlem-nanogpt --server streamlit --scale_memory 1024 --server.ui_port 8080 --server.server_port 8081 --server.template app.py
 
 
