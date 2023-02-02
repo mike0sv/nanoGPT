@@ -1,4 +1,5 @@
 from random import randint
+from urllib.parse import urlencode
 
 import streamlit
 import streamlit.components.v1
@@ -16,10 +17,9 @@ def get_client():
 
 
 client = get_client()
-streamlit.title("MLEM Streamlit UI")
+streamlit.title("nanoGPT MLEM Docs Generator")
+streamlit.markdown("Read more in this [blogpost](todo-link)")
 
-
-# model_form(get_client())
 
 @streamlit.experimental_singleton
 def _dialogue():
@@ -38,11 +38,13 @@ def promt():
                                                     step=1)
             temperature = streamlit.number_input("Temperature", value=0.3)
             random_seed = streamlit.checkbox("Randomize seed", value=True)
-            seed = streamlit.number_input("seed", value=1 if not random_seed else randint(0, 10000))
+            seed = streamlit.number_input("seed",
+                                          value=1 if not random_seed else randint(
+                                              0, 10000))
         with chat:
             for d in dialogue:
                 streamlit.markdown(d, unsafe_allow_html=True)
-            start = streamlit.text_input(label="Say") or ""
+            start = streamlit.text_input(label="Promt") or ""
             arg_values = {"start": start,
                           "max_new_tokens": max_new_tokens,
                           "temperature": temperature, "top_k": 100,
@@ -64,14 +66,21 @@ def promt():
                 return
             dialogue[-1] += response.removeprefix(start)
             streamlit.experimental_rerun()
-    streamlit.button("Clear", on_click=lambda : dialogue.clear())
+    streamlit.button("Clear", on_click=lambda: dialogue.clear())
+
 
 promt()
 streamlit.markdown("---")
 streamlit.write(
     "Built for FastAPI server at `{{server_host}}:{{server_port}}`. Docs: https://mlem.ai/doc"
 )
-streamlit.components.v1.html("""<a href="https://twitter.com/share?ref_src=twsrc%5Etfw" class="twitter-share-button" data-show-count="false">
+params = urlencode({
+    "text": "This app was deployed with mlem.ai!",
+    "url": "https://mlem-nanogpt.fly.dev/",
+    "hashtags": "mlem,mlops"
+})
+streamlit.components.v1.html(
+    f"""<a href="https://twitter.com/share?ref_src=twsrc%5Etfw&{params}" class="twitter-share-button" data-show-count="false">
 Tweet
 </a>
 <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>""")
