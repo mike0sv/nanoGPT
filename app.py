@@ -19,6 +19,9 @@ def get_client():
 
 
 client = get_client()
+streamlit.set_page_config(
+    page_title="nanoGPT+MLEM",
+)
 streamlit.title("nanoGPT MLEM Docs Generator")
 streamlit.markdown("Read more in this [blogpost](todo-link)")
 

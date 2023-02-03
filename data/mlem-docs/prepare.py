@@ -22,7 +22,7 @@ def download():
         git.Repo(repo_path).remote("origin").pull()
 
     with open(input_file_path, 'w') as f:
-        for filename in glob.glob(repo_path + "/content/docs/**/*.md"):
+        for filename in glob.glob(repo_path + "/content/**/*.md", recursive=True):
             print(os.path.relpath(filename, repo_path))
             f.write(os.path.relpath(filename, repo_path) + "\n")
             with open(filename, "r") as docfile:
