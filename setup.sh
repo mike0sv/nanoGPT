@@ -8,7 +8,7 @@ git clone https://github.com/mike0sv/nanoGPT && cd nanoGPT/ && git checkout -b m
 python3 data/mlem-docs/prepare.py char
 
 # train model
-python3 train.py config/train_mlemai.py --device cuda --dtype=float32 --max_iters=3000 --init_from=scratch
+python3 train.py config/train_mlemai.py --device=cuda --dtype=float32 --max_iters=5000 --init_from=scratch
 
 # sample model
 python3 sample.py --out_dir=out-mlemai-char --dtype=float32

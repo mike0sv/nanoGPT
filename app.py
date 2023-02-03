@@ -10,6 +10,9 @@ from mlem.runtime.interface import ExecutionError
 
 MAX_CACHE = 10
 
+streamlit.set_page_config(
+    page_title="nanoGPT+MLEM",
+)
 
 @streamlit.cache(hash_funcs={HTTPClient: lambda x: 0})
 def get_client():
@@ -19,9 +22,6 @@ def get_client():
 
 
 client = get_client()
-streamlit.set_page_config(
-    page_title="nanoGPT+MLEM",
-)
 streamlit.title("nanoGPT MLEM Docs Generator")
 streamlit.markdown("Read more in this [blogpost](todo-link)")
 
