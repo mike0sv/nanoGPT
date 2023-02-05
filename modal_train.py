@@ -50,8 +50,8 @@ def main():
         with open(os.path.join(OUTPUT_DIR, "ckpt.pt"), "wb") as fout:
             for chunk in vol.read_file("ckpt.pt"):
                 fout.write(chunk)
-    print("To delete shared volume with checkpoint file, run "
-          "`modal volume nanogpt-ckpt remove`")
+    # print("To delete shared volume with checkpoint file, run "
+    #       "`modal volume nanogpt-ckpt remove`")
 
 
 if __name__ == '__main__':
