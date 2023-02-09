@@ -1,0 +1,8 @@
+torch
+tiktoken
+gitpython
+numpy
+transformers
+dvc-s3
+mlem[flyio,fastapi,streamlit]
+modal-client
