@@ -23,7 +23,7 @@ def get_client():
 
 client = get_client()
 streamlit.title("nanoGPT MLEM Docs Generator")
-streamlit.markdown("Read more in this [blogpost](todo-link)")
+streamlit.markdown("### Read more in this [blogpost](https://iterative.ai/blog/mlem-nanogpt-modal-flyio)")
 
 
 def get_session_id():
