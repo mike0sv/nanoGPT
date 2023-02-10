@@ -7,12 +7,14 @@ from pydantic import BaseModel
 
 from mlem.runtime.client import HTTPClient
 from mlem.runtime.interface import ExecutionError
+from mlem.contrib.streamlit.utils import call_method
 
 MAX_CACHE = 10
 
 streamlit.set_page_config(
     page_title="nanoGPT+MLEM",
 )
+
 
 @streamlit.cache(hash_funcs={HTTPClient: lambda x: 0})
 def get_client():
@@ -23,7 +25,8 @@ def get_client():
 
 client = get_client()
 streamlit.title("nanoGPT MLEM Docs Generator")
-streamlit.markdown("### Read more in this [blogpost](https://iterative.ai/blog/mlem-nanogpt-modal-flyio)")
+streamlit.markdown(
+    "### Read more in this [blogpost](https://iterative.ai/blog/mlem-nanogpt-modal-flyio)")
 
 
 def get_session_id():
@@ -40,6 +43,7 @@ def _dialogue(user_id):
 
 
 dialogue = _dialogue(get_session_id())
+
 
 def promt():
     with streamlit.form(key="_"):
@@ -67,12 +71,7 @@ def promt():
         with streamlit.spinner("Processing..."):
             try:
                 dialogue.append(f'<span style="color:red">{start}</span>')
-                response = getattr(client, "__call__")(
-                    **{
-                        k: v.dict() if isinstance(v, BaseModel) else v
-                        for k, v in arg_values.items()
-                    }
-                )
+                response = call_method(client, "__call__", arg_values)
             except ExecutionError as e:
                 streamlit.error(e)
                 return
